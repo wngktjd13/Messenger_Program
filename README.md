@@ -1,70 +1,61 @@
-# Getting Started with Create React App
+# Messenger_Program 
+소프트웨어학부 20213029 윤성욱 - [컴퓨터네트워크]
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 개요 (Introduction)
+이 프로젝트는 복수 사용자를 지원하는 메신저 프로그램을 React와 Node.js 기반으로 개발하는 것을 목표로 한다.이 프로그램은 개인 채팅 및 단체 채팅 기능을 제공하며, 실시간 통신을 위해 Socket.IO를 사용한다.
 
-## Available Scripts
+## 프로그램 구조 (Program Structure)
+#### 클라이언트 (React)
+- 상태 관리: `useState`를 사용하여 사용자 ID, 온라인 사용자 목록, 개인 및 단체 채팅 데이터 등을 관리한다.
+- 효과 관리: `useEffect`를 사용하여 초기 로그인 상태를 설정하고, Socket.IO 이벤트 리스너를 설정하며, 필요한 API 호출을 수행한다.
+- UI 구성:
+    - 로그인 및 로그아웃 기능
+    - 온라인 사용자 목록 표시 및 선택
+    - 개인 채팅 및 단체 채팅 인터페이스
+    - 채팅 메시지 보내기 및 받기
+    - 단체 채팅방 생성 및 초대 기능
 
-In the project directory, you can run:
+#### 서버 (Node.js + Express + Socket.IO)
+- 데이터 저장: 사용자 정보, 개인 채팅 및 단체 채팅 데이터는 JSON 파일로 관리된다.
+- API 제공:
+    - 사용자 로그인 및 로그아웃 처리
+    - 온라인 사용자 및 채팅 데이터 제공
+    - 단체 채팅방 관리 (생성, 초대, 삭제)
+    - 소켓 통신: 클라이언트와의 실시간 통신을 관리하며, 메시지 송수신 및 사용자 상태 업데이트를 처리한다.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 주요기능 (Key Features)
+- 로그인 및 세션 관리: 사용자는 ID를 입력하여 로그인하며, 세션 정보는 서버와 클라이언트 모두에서 관리된다.
+- 실시간 사용자 상태 업데이트: 사용자의 접속 상태는 실시간으로 업데이트되며, 온라인 상태의 사용자만 메시지를 주고받을 수 있다.
+- 개인 및 단체 채팅: 사용자는 다른 온라인 사용자와 1:1로 메시지를 주고받거나, 여러 사용자가 참여하는 단체 채팅방에서 소통할 수 있다.
+- 단체 채팅방 관리: 사용자는 단체 채팅방을 생성하고, 다른 사용자를 초대하거나 채팅방을 삭제할 수 있다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 사용 편의성 및 확장성
+- 인터페이스: 클라이언트 인터페이스는 최대한 간단하게 유지되며, 모든 주요 기능은 명확하게 접근 가능하다.
+- 확장성: 시스템은 향후 기능 추가를 쉽게 할 수 있도록 설계되었다. 예를 들어, 메시지 포맷은 HTTP 요청과 유사하게 헤더와 바디로 구성되어 향후 기능 확장을 용이하게 한다.
 
-### `npm test`
+## 코드 주요 함수 기능 설명
+### 로그인 및 세션 관리
+- handleLogin: 사용자가 ID 를 입력하고 '로그인' 버튼을 클릭하면 이 함수가 호출된다. 입력된 ID 와 소켓 ID 를 서버로 전송하며, 로그인 성공 시 사용자의 온라인 상태 및 세션 정보가 업데이트된다.
+- handleLogout: 현재 로그인한 사용자가 '로그아웃' 버튼을 클릭할 경우 이 함수가호출된다. 사용자의 온라인 상태를 오프라인으로 변경하고 세션 정보를 초기화한다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 메시지 전송 및 관리
+- handlePrivateMessageSend: 개인 채팅에서 메시지를 전송하는 함수. 사용자가 메시지 입력 후 전송 버튼을 클릭하면 해당 메시지를 소켓을 통해 다른 사용자에게 직접 전송한다.
+- handleGroupMessageSend: 단체 채팅에서 메시지를 전송하는 함수. 해당 채팅방의 멤버인지 확인 후 메시지를 채팅방에 속한 모든 사용자에게 전송한다.
 
-### `npm run build`
+### 채팅방 관리
+- createGroupChat: 새로운 단체 채팅방을 생성하는 함수. 사용자가 채팅방 이름을 입력하고 생성 버튼을 클릭하면 해당 이름으로 새로운 채팅방을 생성한다.
+- inviteToGroupChat: 특정 사용자를 단체 채팅방에 초대하는 함수. 초대하려는 사용자의 ID 를 서버에 전송하여 초대 처리를 수행한다.
+- deleteGroupChat: 단체 채팅방을 삭제하는 함수. 채팅방 관리자만이 해당 기능을 수행할 수 있으며, 삭제 시 모든 채팅 데이터가 제거된다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 서버 사이드 주요 함수 및 기능 (Node.js + Express + Socket.IO)
+### 사용자 및 세션 관리
+- /login, /logout 엔드포인트: 사용자 로그인 및 로그아웃을 처리하는 API. 로그인 시 사용자 ID 및 소켓 ID 를 받아 사용자의 온라인 상태를 업데이트하고, 로그아웃 시 사용자의 온라인 상태를 오프라인으로 설정한다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 메시지 관리
+- socket.on('message',...): 개인 메시지를 처리하는 소켓 이벤트. 메시지를 받은 후 저장하고 해당 사용자에게 메시지를 전달한다.
+- socket.on('groupMessage',...): 단체 메시지를 처리하는 소켓 이벤트. 메시지를 해당 단체 채팅방의 모든 멤버에게 전달한다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 채팅방 관리
+- /create-group-chat, /invite-to-group, /delete-group-chat 엔드포인트: 단체 채팅방의 생성, 초대, 삭제를 처리하는 API. 각각 새로운 채팅방을 생성하거나, 사용자를 채팅방에 초대하고, 채팅방을 삭제하는 기능을 제공한다.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
